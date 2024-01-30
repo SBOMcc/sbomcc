@@ -21,19 +21,19 @@
   (response/output
     (lambda (op) (display (include-template "src/index.html") op))))
 
-(define (get-title req)
-  (response/xexpr
-    `(h1
-      ([class "font-normal text-gray-900 text-4xl md:text-7xl leading-none mb-8"]
-       [id "title"])
-      ,(random-title title-header))))
+; (define (get-title req)
+;   (response/xexpr
+;     `(h1
+;       ([class "font-normal text-gray-900 text-4xl md:text-7xl leading-none mb-8"]
+;        [id "title"])
+;       ,(random-title title-header))))
 
-(define (get-lao-tzu req)
-  (response/xexpr
-    `(h1
-      ([class "font-normal text-gray-300 text-3xl md:text-6xl lg:text-7xl"]
-       [id "lao-tzu"])
-      ,(random-quote lao-tzu-quotes))))
+; (define (get-lao-tzu req)
+;   (response/xexpr
+;     `(h1
+;       ([class "font-normal text-gray-300 text-3xl md:text-6xl lg:text-7xl"]
+;        [id "lao-tzu"])
+;       ,(random-quote lao-tzu-quotes))))
 
 (define-values (api-dispatch api-url)
     (dispatch-rules
