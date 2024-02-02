@@ -5,11 +5,11 @@
 ;; —————————————————————————————————
 ;; import and implementation section
 
-; (require
+(require
 ;   "local.rkt"
 ;   "github-user.rkt"
-;   "parser.rkt"
-;   "strings.rkt")
+  "parser.rkt"
+  "strings.rkt")
 
 (define (main args)
 ;   (displayln (string-append "Bogu " version-slug))
