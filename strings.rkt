@@ -4,17 +4,16 @@
 
 ;; Ask and I shall provide
 (provide
-  all-defined-out)
+  (all-defined-out))
 
 ;; —————————————————————————————————
 ;; import and implementation section
 
 (define version-slug "v0.0.1")
 
-(define help-text (format "sbomcc - ~a
-SBOM Parsing for Humans
+(define help-text "SBOM Parsing for Humans
 
-Use -h|--help for more details." version-slug))
+Use -h|--help for more details.")
 
 (define (parse-start-text scan-type)
   (format "\nStarting ~a parse...\n" scan-type))

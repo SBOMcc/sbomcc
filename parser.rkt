@@ -23,7 +23,7 @@
 (define parser
   (command-line
     #:usage-help
-    "Bogu - The Secret Scanner"
+    "sbom.cc - The Secret Scanner"
     #:once-each
     [("-p" "--path") PATH "Local scan path" (local-path PATH)]
     [("--github-owner") OWNER "GitHub Repo Scan by Owner" (github-owner OWNER)]
