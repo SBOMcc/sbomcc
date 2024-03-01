@@ -1,6 +1,8 @@
 sbomcc: sbomcc.rkt \
 		parser.rkt \
-		strings.rkt
+		strings.rkt \
+		local.rkt \
+		utils.rkt
 	raco exe sbomcc.rkt
 	raco distribute build sbomcc
 

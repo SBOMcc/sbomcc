@@ -9,7 +9,10 @@
 ;; —————————————————————————————————
 ;; import and implementation section
 
-(require json)
+(require 
+  json
+  "parser.rkt"
+  "utils.rkt")
 
 ;; Function to read JSON from a file
 (define (read-json-file filepath)
@@ -30,80 +33,83 @@
 (define reset "\e[0m")
 
 (define (print-json-table json-data)
+  (define exclusions (parse-exclusions (exclude-sbom-section)))
+  (define (key-match? key key-symbol)
+    (and (symbol=? key key-symbol) (not (member (symbol->string key-symbol) exclusions))))
   (if (hash? json-data)
       (begin
         (newline)
         (for ([pair (hash->list json-data)])
           (let ([key (car pair)] [value (cdr pair)])
-            (cond [(symbol=? key 'name)
+            (cond [(key-match? key 'name)
                    (printf "~a~aName~a\t\t\t~a\n" bold magenta reset value)]
-                  [(symbol=? key 'spdxVersion)
+                  [(key-match? key 'spdxVersion)
                    (printf "~a~aSPDX Version~a\t\t~a\n" bold magenta reset value)]
-                  [(symbol=? key 'dataLicense)
+                  [(key-match? key 'dataLicense)
                    (printf "~a~aData License~a\t\t~a\n" bold magenta reset value)]
-                  [(symbol=? key 'documentNamespace)
+                  [(key-match? key 'documentNamespace)
                    (printf "~a~aDocument Namespace~a\t~a\n" bold magenta reset value)]
-                  [(symbol=? key 'creationInfo)
+                  [(key-match? key 'creationInfo)
                    (begin
                      (printf "~a~aCreation Info~a\n" bold magenta reset)
                      (for ([pair (hash->list value)])
                        (let ([k (car pair)] [v (cdr pair)])
-                         (cond [(symbol=? k 'created)
+                         (cond [(key-match? k 'created)
                                 (printf "\t~aCreated~a\t\t~a\n" bold reset v)]
-                               [(symbol=? k 'creators)
+                               [(key-match? k 'creators)
                                 (begin
                                   (printf "\t~aCreators~a\n" bold reset)
                                   (for ([creator v])
                                     (printf "\t\t\t~a\n" creator)))]))))]
-                  [(symbol=? key 'documentDescribes)
+                  [(key-match? key 'documentDescribes)
                    (begin
                      (printf "~a~aDocument Describes~a\n" bold magenta reset)
                      (for ([creator value])
                        (printf "\t\t\t~a\n" creator)))]
-                  [(symbol=? key 'packages)
+                  [(key-match? key 'packages)
                    (begin
                      (printf "~a~aPackages~a\n" bold magenta reset)
                      (for ([package value])
                        (for ([pair (hash->list package)])
                          (let ([k (car pair)] [v (cdr pair)])
-                           (cond [(symbol=? k 'name)
+                           (cond [(key-match? k 'name)
                                   (printf "\t~aName~a\t\t\t~a\n" bold reset v)]
-                                 [(symbol=? k 'SPDXID)
+                                 [(key-match? k 'SPDXID)
                                   (printf "\t~aSPDX ID~a\t\t\t~a\n" bold reset v)]
-                                 [(symbol=? k 'versionInfo)
+                                 [(key-match? k 'versionInfo)
                                   (printf "\t~aVersion~a\t\t\t~a\n" bold reset v)]
-                                 [(symbol=? k 'downloadLocation)
+                                 [(key-match? k 'downloadLocation)
                                   (printf "\t~aDownload Location~a\t~a\n" bold reset v)]
-                                 [(symbol=? k 'filesAnalyzed)
+                                 [(key-match? k 'filesAnalyzed)
                                   (printf "\t~aFiles Analyzed~a\t\t~a\n" bold reset v)]
-                                 [(symbol=? k 'licenseConcluded)
+                                 [(key-match? k 'licenseConcluded)
                                   (printf "\t~aLicense Concluded~a\t~a\n" bold reset v)]
-                                 [(symbol=? k 'supplier)
+                                 [(key-match? k 'supplier)
                                   (printf "\t~aSupplier~a\t\t~a\n" bold reset v)]
-                                 [(symbol=? k 'externalRefs)
+                                 [(key-match? k 'externalRefs)
                                   (begin
                                     (printf "\t~aExternal Refs~a\n" bold reset)
                                     (for ([ref v])
                                       (for ([pair (hash->list ref)])
                                         (let ([k (car pair)] [v (cdr pair)])
-                                          (cond [(symbol=? k 'referenceCategory)
+                                          (cond [(key-match? k 'referenceCategory)
                                                  (printf "\t\tReference Category\t~a\n" v)]
-                                                [(symbol=? k 'referenceType)
+                                                [(key-match? k 'referenceType)
                                                  (printf "\t\tReference Type\t\t~a\n" v)]
-                                                [(symbol=? k 'referenceLocator)
+                                                [(key-match? k 'referenceLocator)
                                                  (printf "\t\tReference Locator\t~a\n" v)])))))])))
                        (printf "\t~a--------------------------------------------------~a\n" red reset)))]
-                  [(symbol=? key 'relationships)
+                  [(key-match? key 'relationships)
                     (begin
                       (printf "~a~aRelationships~a\n" bold magenta reset)
                       (for ([relationship value])
                         (for ([pair (hash->list relationship)])
                           (let ([k (car pair)] [v (cdr pair)])
-                            (cond [(symbol=? k 'relationshipType)
+                            (cond [(key-match? k 'relationshipType)
                                     (printf "\t~aRelationship Type~a\t~a\n" bold reset v)]
-                                  [(symbol=? k 'spdxElementId)
+                                  [(key-match? k 'spdxElementId)
                                     (printf "\t~aSPDX Element ID~a\t\t~a\n" bold reset v)]
-                                  [(symbol=? k 'relatedSpdxElement)
+                                  [(key-match? k 'relatedSpdxElement)
                                     (printf "\t~aRelated SPDX Element~a\t~a\n" bold reset v)])))
                         (printf "\t~a--------------------------------------------------~a\n" red reset)))]))))
       (error "Input is not a hash.")))
