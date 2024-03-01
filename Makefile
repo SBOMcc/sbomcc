@@ -37,8 +37,7 @@ sbomcc: sbomcc.rkt \
 # 	zip -r9 bogu-$(BOGU_VERSION)-linux-x64.zip bogu-$(BOGU_VERSION)
 
 clean:
-	rm bogu || true
-	rm -rf bogu-* || true
+	rm sbomcc || true
+	rm -rf sbomcc-* || true
 	rm -rf build* || true
 	# rm install.sh || true
-

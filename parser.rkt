@@ -13,7 +13,7 @@
 (define output-format (make-parameter ""))
 (define github-owner (make-parameter ""))
 (define github-token (make-parameter ""))
-(define local-path (make-parameter ""))
+(define sbom-file-path (make-parameter ""))
 (define silent (make-parameter #f))
 (define debug (make-parameter #f))
 (define verbose (make-parameter #f))
@@ -23,15 +23,15 @@
 (define parser
   (command-line
     #:usage-help
-    "sbom.cc - The Secret Scanner"
+    "sbom.cc - SBOM Parsing For Humans"
     #:once-each
-    [("-p" "--path") PATH "Local scan path" (local-path PATH)]
-    [("--github-owner") OWNER "GitHub Repo Scan by Owner" (github-owner OWNER)]
-    [("-d" "--debug") "Debug" (debug #t)]
-    [("-v" "--verbose") "Verbose" (verbose #t)]
-    [("-s" "--silent") "Silent" (silent #t)]
-    [("-t" "--token") TOKEN "GitHub Token" (github-token TOKEN)]
-    [("-f" "--format") FORMAT "Output format" (output-format FORMAT)]
+    [("-f" "--file") FILE "SBOM File Path" (sbom-file-path FILE)]
+    ; [("--github-owner") OWNER "GitHub Repo Scan by Owner" (github-owner OWNER)]
+    ; [("-d" "--debug") "Debug" (debug #t)]
+    ; [("-v" "--verbose") "Verbose" (verbose #t)]
+    ; [("-s" "--silent") "Silent" (silent #t)]
+    ; [("-t" "--token") TOKEN "GitHub Token" (github-token TOKEN)]
+    ; [("-f" "--format") FORMAT "Output format" (output-format FORMAT)]
     #:once-any
     [("--version") "Version" (version #t)]))
 
