@@ -9,5 +9,5 @@
 ;; —————————————————————————————————
 ;; import and implementation section
 
-(define (parse-exclusions exclusion-string)
-  (string-split exclusion-string ","))
+(define (parse-comma-lists comma-string)
+  (string-split comma-string ","))

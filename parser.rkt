@@ -14,6 +14,7 @@
 ; (define github-owner (make-parameter ""))
 ; (define github-token (make-parameter ""))
 (define exclude-sbom-section (make-parameter ""))
+(define include-sbom-section (make-parameter ""))
 (define sbom-file-path (make-parameter ""))
 ; (define silent (make-parameter #f))
 ; (define debug (make-parameter #f))
@@ -27,7 +28,8 @@
     "sbom.cc - SBOM Parsing For Humans"
     #:once-each
     [("-f" "--file") FILE "SBOM File Path" (sbom-file-path FILE)]
-    [("-x" "--exclude") EXCLUDE "Exclude SBOM Section" (exclude-sbom-section EXCLUDE)]
+    [("-i" "--include") INCLUDE "Include SBOM Section(s)" (include-sbom-section INCLUDE)]
+    [("-x" "--exclude") EXCLUDE "Exclude SBOM Section(s)" (exclude-sbom-section EXCLUDE)]
     ; [("--github-owner") OWNER "GitHub Repo Scan by Owner" (github-owner OWNER)]
     ; [("-d" "--debug") "Debug" (debug #t)]
     ; [("-v" "--verbose") "Verbose" (verbose #t)]

@@ -33,9 +33,14 @@
 (define reset "\e[0m")
 
 (define (print-json-table json-data)
-  (define exclusions (parse-exclusions (exclude-sbom-section)))
+  (define exclusions (parse-comma-lists (exclude-sbom-section)))
+  (define inclusions (parse-comma-lists (include-sbom-section)))
   (define (key-match? key key-symbol)
-    (and (symbol=? key key-symbol) (not (member (symbol->string key-symbol) exclusions))))
+    (cond [(and (symbol=? key key-symbol) (> (length inclusions) 0) (member (symbol->string key-symbol) inclusions)) #t]
+          [(and (symbol=? key key-symbol) (> (length inclusions) 0) (not (member (symbol->string key-symbol) inclusions))) #f]
+          [(and (symbol=? key key-symbol) (> (length exclusions) 0) (member (symbol->string key-symbol) exclusions)) #f]
+          [(and (symbol=? key key-symbol) (> (length exclusions) 0) (not (member (symbol->string key-symbol) exclusions))) #t]
+          [else #f]))
   (if (hash? json-data)
       (begin
         (newline)
