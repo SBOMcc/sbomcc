@@ -14,6 +14,7 @@
 ; (define github-owner (make-parameter ""))
 ; (define github-token (make-parameter ""))
 (define exclude-sbom-section (make-parameter ""))
+(define sbom-filter (make-parameter ""))
 (define include-sbom-section (make-parameter ""))
 (define sbom-file-path (make-parameter ""))
 ; (define silent (make-parameter #f))
@@ -30,6 +31,7 @@
     [("-f" "--file") FILE "SBOM File Path" (sbom-file-path FILE)]
     [("-i" "--include") INCLUDE "Include SBOM Section(s)" (include-sbom-section INCLUDE)]
     [("-x" "--exclude") EXCLUDE "Exclude SBOM Section(s)" (exclude-sbom-section EXCLUDE)]
+    [("-t" "--filter") FILTER "Filter using text or regular expression" (sbom-filter FILTER)]
     ; [("--github-owner") OWNER "GitHub Repo Scan by Owner" (github-owner OWNER)]
     ; [("-d" "--debug") "Debug" (debug #t)]
     ; [("-v" "--verbose") "Verbose" (verbose #t)]

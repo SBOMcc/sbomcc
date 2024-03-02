@@ -1,0 +1,41 @@
+on: 
+  push:
+  workflow_dispatch:
+
+name: E2E Tests
+jobs:
+  e2e:
+    name: "Build on Racket '${{ matrix.racket-version }}' (${{ matrix.racket-variant }})"
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental || false }}
+    strategy:
+      fail-fast: false
+      matrix:
+        racket-version: ["stable", "current"]
+        racket-variant: ["BC", "CS"]
+        include:
+          - racket-version: current
+            experimental: true
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Racket
+        uses: Bogdanp/setup-racket@v1.9.1
+        with:
+          architecture: x64
+          distribution: full
+          variant: ${{ matrix.racket-variant }}
+          version: ${{ matrix.racket-version }}
+
+      - name: Setup Raco
+        run: sudo raco setup
+
+      # - name: raco pkg install
+      #   run: raco pkg install uuid
+
+      - name: Build sbomcc
+        run: make sbomcc
+
+      - name: Run
+        run: ./sbomcc -f mock/spdx.json
