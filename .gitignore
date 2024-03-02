@@ -5,3 +5,10 @@ compiled/
 *.bak
 \#*
 .\#*
+sbomcc
+sbomcc-*
+build
+*.zip
+.archives
+install.sh
+scripts/
