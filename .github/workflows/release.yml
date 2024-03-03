@@ -69,5 +69,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/SBOMcc/sbomcc:${{ inputs.release_version }}
+          tags: ghcr.io/sbomcc/sbomcc:${{ inputs.release_version }}
           labels: ${{ steps.meta.outputs.labels }}
