@@ -1,0 +1,13 @@
+FROM ubuntu:latest
+WORKDIR /sbomcc
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    curl \
+    wget \
+    unzip \
+    && rm -rf /var/lib/apt/lists/* \
+    && wget https://github.com/SBOMcc/sbomcc/releases/download/0.0.1/sbomcc-0.0.1-linux-x64.zip \
+    && unzip sbomcc-0.0.1-linux-x64.zip
+# EXPOSE 8080
+ENTRYPOINT [ "bogu-0.0.1/bin/bogu" ]
+CMD [ "--version" ]
