@@ -9,7 +9,7 @@
 ;; —————————————————————————————————
 ;; import and implementation section
 
-(define version-slug "v0.0.1")
+(define version-slug "v0.0.2")
 
 (define help-text "SBOM Parsing for Humans
 
