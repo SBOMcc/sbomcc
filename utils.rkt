@@ -151,3 +151,11 @@
 
 (define (sbom-filter-regexp filter-string)
   (regexp filter-string))
+
+(define (symbolic-link)
+  (cond [(file-exists? "/usr/local/bin/sbomcc")
+         (delete-file "/usr/local/bin/sbomcc")])
+  (define pwd (path->string (current-directory)))
+  (define destination "/usr/local/bin/sbomcc")
+  (make-file-or-directory-link (string-append pwd "sbomcc") destination)
+  (displayln "Symbolic link created in /usr/local/bin"))

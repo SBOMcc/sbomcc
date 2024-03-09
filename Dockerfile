@@ -6,8 +6,8 @@ RUN apt-get update && apt-get install -y \
     wget \
     unzip \
     && rm -rf /var/lib/apt/lists/* \
-    && wget https://github.com/SBOMcc/sbomcc/releases/download/0.0.1/sbomcc-0.0.1-linux-x64.zip \
-    && unzip sbomcc-0.0.1-linux-x64.zip
+    && wget https://github.com/SBOMcc/sbomcc/releases/download/0.0.2/sbomcc-0.0.2-linux-x64.zip \
+    && unzip sbomcc-0.0.2-linux-x64.zip
 # EXPOSE 8080
-ENTRYPOINT [ "sbomcc-0.0.1/bin/sbomcc" ]
+ENTRYPOINT [ "sbomcc-0.0.2/bin/sbomcc" ]
 CMD [ "--version" ]
