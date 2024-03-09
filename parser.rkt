@@ -42,4 +42,3 @@
     #:once-any
     [("--version") "sbomcc version" (version #t)]
     [("--symlink") "Create symbolic link in /usr/local/bin" (symlink #t)]))
-

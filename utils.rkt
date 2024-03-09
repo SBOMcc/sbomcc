@@ -159,3 +159,4 @@
   (define destination "/usr/local/bin/sbomcc")
   (make-file-or-directory-link (string-append pwd "sbomcc") destination)
   (displayln "Symbolic link created in /usr/local/bin"))
+  
