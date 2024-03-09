@@ -20,6 +20,7 @@
 ; (define silent (make-parameter #f))
 ; (define debug (make-parameter #f))
 ; (define verbose (make-parameter #f))
+(define symlink (make-parameter #f))
 (define version (make-parameter #f))
 
 ; Command line parser
@@ -39,5 +40,6 @@
     ; [("-t" "--token") TOKEN "GitHub Token" (github-token TOKEN)]
     ; [("-f" "--format") FORMAT "Output format" (output-format FORMAT)]
     #:once-any
-    [("--version") "sbomcc version" (version #t)]))
+    [("--version") "sbomcc version" (version #t)]
+    [("--symlink") "Create symbolic link in /usr/local/bin" (symlink #t)]))
 
