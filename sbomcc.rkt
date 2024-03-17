@@ -10,7 +10,8 @@
 ;   "github-user.rkt"
   "parser.rkt"
   "strings.rkt"
-  "utils.rkt")
+  "utils.rkt"
+  "web.rkt")
 
 (define (main args)
   (displayln (string-append "sbom.cc " version-slug))
@@ -19,6 +20,7 @@
 ;   (cond [(> (string-length (github-user)) 0) (github-user-scan (github-user))])
   (cond [(symlink) (symbolic-link)])
   (cond [(version) (displayln version-slug)])
+  (cond [(web) (web-server-start)])
   (values))
 
 (main (current-command-line-arguments))
