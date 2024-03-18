@@ -12,6 +12,7 @@
 (require 
   "parser.rkt"
   "utils.rkt"
+  "local.rkt"
   web-server/servlet
   web-server/servlet-env
   web-server/dispatch
@@ -19,6 +20,7 @@
 
 (define (web-server-start)
   (printf "Starting web server on port 8080\n")
+  ; (printf "~a\n" local-sboms)
   ;; Define the static file directories
   (define static-dir (build-path (current-directory) "static"))
   (define css-dir (build-path static-dir "css"))
@@ -31,13 +33,14 @@
      `(html (head (title "Home"))
             (body (h1 "Welcome to the Home Page!")))))
 
-  (define (about-handler req)
-    (response/xexpr
-     `(html (head (title "About"))
-            (body (h1 "About Us")))))
+  (define (sbom-info)
+    (apply append
+      (for/list ([sbom local-sboms])
+        `((h2 ,(hash-ref sbom 'SPDXID))))))
 
   ;; Define the template
   (define (main-template req)
+    (define info (sbom-info))
     (response/xexpr
      `(html (head (title "SBOM.cc")
                   (style ([type "text/css"])
@@ -114,13 +117,13 @@
                             }
                           }"))              
             (body (h1 "SBOM.cc")
-                  (p "SBOM Parsing for Humans")))))
+                  (p "SBOM Parsing for Humans")
+                  ,@info))))
 
   ;; Define the dispatch rules
   (define-values (app-dispatch app-url)
     (dispatch-rules
      [("home") home-handler]
-     [("about") about-handler]
      [("") main-template]))
 
   ;; Define the web server entry point
