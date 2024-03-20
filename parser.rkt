@@ -40,7 +40,7 @@
     ; [("-s" "--silent") "Silent" (silent #t)]
     ; [("-t" "--token") TOKEN "GitHub Token" (github-token TOKEN)]
     ; [("-f" "--format") FORMAT "Output format" (output-format FORMAT)]
-    [("-w" "--web") "Open web browser" (web #t)]
+    [("-w" "--web") "Web server mode" (web #t)]
     #:once-any
     [("--version") "sbomcc version" (version #t)]
     [("--symlink") "Create symbolic link in /usr/local/bin" (symlink #t)]))
