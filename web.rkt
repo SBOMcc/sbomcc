@@ -33,6 +33,23 @@
      `(html (head (title "Home"))
             (body (h1 "Welcome to the Home Page!")))))
 
+  (define (nav-container)
+    (define nav-item (nav-items))
+    `((div ([class "nav-container"])
+        ,@nav-item)))
+
+  (define (nav-items)
+    (apply append
+      (for/list ([sbom local-sboms])
+        `((a ([class "nav-item"]
+              [href  "#"])
+          ,(hash-ref sbom 'name))))))
+
+  (define (main-content)
+    (define info (sbom-info))
+    `((div ([class "main-content"])
+        ,@info)))
+
   (define (sbom-info)
     (apply append
       (for/list ([sbom local-sboms])
@@ -40,7 +57,8 @@
 
   ;; Define the template
   (define (main-template req)
-    (define info (sbom-info))
+    (define nav (nav-container))
+    (define main (main-content))
     (response/xexpr
      `(html (head (title "SBOM.cc")
                   (style ([type "text/css"])
@@ -70,13 +88,42 @@
                             font-family: Arial, sans-serif;
                           }
 
+                          .nav-container {
+                            position: fixed;
+                            left: 0;
+                            top: 0;
+                            width: 250px;
+                            height: 100%;
+                            background-color: var(--color-space-cadet);
+                            color: var(--color-columbia-blue);
+                            overflow: auto;
+                            z-index: 1000;
+                          }
+
+                          .nav-item {
+                            display: block;
+                            padding: 10px 15px;
+                            text-decoration: none;
+                            color: inherit;
+                            border-bottom: 1px solid var(--color-ultra-violet);
+                          }
+
                           table {
                             width: 100%;
                             border-collapse: collapse;
                           }
 
+                          .nav-item:hover {
+                            background-color: var(--color-ultra-violet);
+                            color: var(--color-white);
+                          }
+
                           table, th, td {
                             border: 1px solid var(--color-space-cadet);
+                          }
+
+                          .main-content {
+                            margin-left: 250px;
                           }
 
                           th, td {
@@ -110,15 +157,26 @@
                             border-radius: 5px;
                           }
 
-                          /* Example media query for responsiveness */
-                          @media (max-width: 600px) {
+                          @media (max-width: 768px) {
+                            .nav-container {
+                              width: 100px;
+                            }
+
+                            .nav-item {
+                              padding: 10px;
+                              font-size: 0.75rem;
+                            }
+
+                            .main-content {
+                              margin-left: 100px;
+                            }
+
                             .table-responsive {
                               overflow-x: auto;
                             }
                           }"))              
-            (body (h1 "SBOM.cc")
-                  (p "SBOM Parsing for Humans")
-                  ,@info))))
+            (body ,@nav
+                  ,@main))))
 
   ;; Define the dispatch rules
   (define-values (app-dispatch app-url)
