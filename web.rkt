@@ -28,27 +28,36 @@
   (define js-dir (build-path static-dir "js"))
 
   ;; Define the endpoints
-  (define (home-handler req)
-    (response/xexpr
-     `(html (head (title "Home"))
-            (body (h1 "Welcome to the Home Page!")))))
+  (define (sbom-handler req)
+    (let* ([params (request-bindings req)]
+           [name (cdr (first params))])
+      (if name
+          (response/xexpr
+            (apply append
+              (for/list ([sbom local-sboms])
+                (if (equal? (hash-ref sbom 'name) name)
+                    `(h2 ,(hash-ref sbom 'SPDXID))
+                    empty))))
+          (response/xexpr
+            `(p "Name parameter is missing.")))))
 
   (define (nav-container)
     (define nav-item (nav-items))
-    `((div ([class "nav-container"])
+    `((div ([class "nav-container"]
+            [_ "on load send click to the first .nav-item"])
         ,@nav-item)))
 
   (define (nav-items)
     (apply append
       (for/list ([sbom local-sboms])
         `((a ([class "nav-item"]
-              [href  "#"])
+              [href  "#"]
+              [hx-get ,(format "/sbom?name=~a" (hash-ref sbom 'name))]
+              [hx-target ".main-content"])
           ,(hash-ref sbom 'name))))))
 
   (define (main-content)
-    (define info (sbom-info))
-    `((div ([class "main-content"])
-        ,@info)))
+    `((div ([class "main-content"]))))
 
   (define (sbom-info)
     (apply append
@@ -174,14 +183,18 @@
                             .table-responsive {
                               overflow-x: auto;
                             }
-                          }"))              
+                          }")
+                  (script ([src "https://unpkg.com/htmx.org@1.9.11"]
+                           [integrity "sha384-0gxUXCCR8yv9FM2b+U3FDbsKthCI66oH5IA9fHppQq9DDMHuMauqq1ZHBpJxQ0J0"]
+                           [crossorigin "anonymous"]))
+                  (script ([src "https://unpkg.com/hyperscript.org@0.9.12"])))              
             (body ,@nav
                   ,@main))))
 
   ;; Define the dispatch rules
   (define-values (app-dispatch app-url)
     (dispatch-rules
-     [("home") home-handler]
+     [("sbom") sbom-handler]
      [("") main-template]))
 
   ;; Define the web server entry point
