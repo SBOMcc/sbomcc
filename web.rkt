@@ -36,7 +36,32 @@
             (apply append
               (for/list ([sbom local-sboms])
                 (if (equal? (hash-ref sbom 'name) name)
-                    `(h2 ,(hash-ref sbom 'SPDXID))
+                    `(div
+                      (h2 ,(hash-ref sbom 'name))
+                      (table
+                        (tr
+                          (td (b "SPDXID"))
+                          (td ,(hash-ref sbom 'SPDXID)))
+                        (tr
+                          (td (b "spdxVersion"))
+                          (td ,(hash-ref sbom 'spdxVersion)))
+                        (tr
+                          (td (b "dataLicense"))
+                          (td ,(hash-ref sbom 'dataLicense)))
+                        (tr
+                          (td (b "documentDescribes"))
+                          (td ,(string-join (hash-ref sbom 'documentDescribes) "<br/>")))
+                        (tr
+                          (td (b "documentNamespace"))
+                          (td ,(hash-ref sbom 'documentNamespace))))
+                      (h3 "Creation Information")
+                      (table
+                        (tr
+                          (td (b "created"))
+                          (td ,(hash-ref (hash-ref sbom 'creationInfo) 'created)))
+                        (tr
+                          (td (b "creators"))
+                          (td ,(string-join (hash-ref (hash-ref sbom 'creationInfo) 'creators) "<br/>")))))
                     empty))))
           (response/xexpr
             `(p "Name parameter is missing.")))))
@@ -62,7 +87,7 @@
   (define (sbom-info)
     (apply append
       (for/list ([sbom local-sboms])
-        `((h2 ,(hash-ref sbom 'SPDXID))))))
+        `((h2 ,(hash-ref sbom 'name))))))
 
   ;; Define the template
   (define (main-template req)
@@ -187,8 +212,32 @@
                   (script ([src "https://unpkg.com/htmx.org@1.9.11"]
                            [integrity "sha384-0gxUXCCR8yv9FM2b+U3FDbsKthCI66oH5IA9fHppQq9DDMHuMauqq1ZHBpJxQ0J0"]
                            [crossorigin "anonymous"]))
-                  (script ([src "https://unpkg.com/hyperscript.org@0.9.12"])))              
-            (body ,@nav
+                  (script ([src "https://unpkg.com/hyperscript.org@0.9.12"]))
+                  (script ([type "text/javascript"])
+                          "document.addEventListener('DOMContentLoaded', function () {
+                            const toggle = document.querySelector('.dark-mode-toggle');
+                            const body = document.body;
+                            // Check local storage for theme preference
+                            const currentTheme = localStorage.getItem('theme');
+                            if (currentTheme) {
+                              body.setAttribute('data-theme', currentTheme);
+                            }
+                            toggle.addEventListener('click', function() {
+                              if (body.getAttribute('data-theme') === 'dark') {
+                                body.setAttribute('data-theme', 'light');
+                                localStorage.setItem('theme', 'light');
+                                this.innerText = 'light';
+                              } else {
+                                body.setAttribute('data-theme', 'dark');
+                                localStorage.setItem('theme', 'dark');
+                                this.innerText = 'dark';
+                              }
+                            });
+                           });"))
+            (body ([data-theme "light"])
+                  (button ([class "dark-mode-toggle"])
+                          "light")
+                  ,@nav
                   ,@main))))
 
   ;; Define the dispatch rules
