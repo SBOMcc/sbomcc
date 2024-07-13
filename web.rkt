@@ -40,27 +40,27 @@
                       (h2 ,(hash-ref sbom 'name))
                       (table
                         (tr
-                          (td (b "SPDXID"))
+                          (td ([class "row-header"]) (b "SPDXID"))
                           (td ,(hash-ref sbom 'SPDXID)))
                         (tr
-                          (td (b "spdxVersion"))
+                          (td ([class "row-header"]) (b "spdxVersion"))
                           (td ,(hash-ref sbom 'spdxVersion)))
                         (tr
-                          (td (b "dataLicense"))
+                          (td ([class "row-header"]) (b "dataLicense"))
                           (td ,(hash-ref sbom 'dataLicense)))
                         (tr
-                          (td (b "documentDescribes"))
+                          (td ([class "row-header"]) (b "documentDescribes"))
                           (td ,(string-join (hash-ref sbom 'documentDescribes) "<br/>")))
                         (tr
-                          (td (b "documentNamespace"))
+                          (td ([class "row-header"]) (b "documentNamespace"))
                           (td ,(hash-ref sbom 'documentNamespace))))
                       (h3 "Creation Information")
                       (table
                         (tr
-                          (td (b "created"))
+                          (td ([class "row-header"]) (b "created"))
                           (td ,(hash-ref (hash-ref sbom 'creationInfo) 'created)))
                         (tr
-                          (td (b "creators"))
+                          (td ([class "row-header"]) (b "creators"))
                           (td ,(string-join (hash-ref (hash-ref sbom 'creationInfo) 'creators) "<br/>"))))
                       (h3 "Packages")
                       (table
@@ -90,7 +90,17 @@
                                                 (br)
                                                 ,(hash-ref ref 'referenceType)
                                                 (br)))))))
-                      (h3 "Relationships"))
+                      (h3 "Relationships")
+                      (table
+                        (tr
+                          (th "Relationship Type")
+                          (th "SPDX Element ID")
+                          (th "Related SPDX Element"))
+                        ,@(for/list ([rel (hash-ref sbom 'relationships)])
+                          `(tr
+                            (td ,(hash-ref rel 'relationshipType))
+                            (td ,(hash-ref rel 'spdxElementId))
+                            (td ,(hash-ref rel 'relatedSpdxElement))))))
                     empty))))
           (response/xexpr
             `(p "Name parameter is missing.")))))
@@ -126,23 +136,29 @@
      `(html (head (title "SBOM.cc")
                   (style ([type "text/css"])
                          ":root { 
-                            --color-black: #000505;
-                            --color-space-cadet: #3b3355;
-                            --color-ultra-violet: #5d5d81;
-                            --color-columbia-blue: #bfcde0;
-                            --color-white: #fefcfd;
+                            --color-black: #000;
+                            --color-gray: #222;
+                            --color-grayer: #444;
+                            --color-white: #fff;
+                            --color-offwhite: #ddd;
 
-                            --background-color: var(--color-columbia-blue);
-                            --text-color: var(--color-space-cadet);
+                            --background-color: var(--color-white);
+                            --text-color: var(--color-black);
                             --table-background: var(--color-white);
                             --table-text: var(--color-black);
+                            --hover-color: var(--color-offwhite);
+                            --toggle-background: var(--color-black);
+                            --toggle-text: var(--color-white);
                           }
 
                           [data-theme=\"dark\"] {
-                            --background-color: var(--color-space-cadet);
-                            --text-color: var(--color-columbia-blue);
-                            --table-background: var(--color-ultra-violet);
-                            --table-text: var(--color-columbia-blue);
+                            --background-color: var(--color-black);
+                            --text-color: var(--color-white);
+                            --table-background: var(--color-black);
+                            --table-text: var(--color-white);
+                            --hover-color: var(--color-grayer);
+                            --toggle-background: var(--color-white);
+                            --toggle-text: var(--color-black);
                           }
 
                           body {
@@ -157,8 +173,9 @@
                             top: 0;
                             width: 250px;
                             height: 100%;
-                            background-color: var(--color-space-cadet);
-                            color: var(--color-columbia-blue);
+                            background-color: var(--background-color);
+                            border-right: 1px solid var(--color-grayer);
+                            color: var(--text-color);
                             overflow: auto;
                             z-index: 1000;
                           }
@@ -168,7 +185,7 @@
                             padding: 10px 15px;
                             text-decoration: none;
                             color: inherit;
-                            border-bottom: 1px solid var(--color-ultra-violet);
+                            border-bottom: 1px solid var(--color-grayer);
                           }
 
                           table {
@@ -177,12 +194,12 @@
                           }
 
                           .nav-item:hover {
-                            background-color: var(--color-ultra-violet);
-                            color: var(--color-white);
+                            background-color: var(--hover-color);
+                            color: var(--text-color);
                           }
 
                           table, th, td {
-                            border: 1px solid var(--color-space-cadet);
+                            border: 1px solid var(--color-grayer);
                           }
 
                           .main-content {
@@ -194,18 +211,18 @@
                             padding: 8px;
                           }
 
-                          th {
-                            background-color: var(--color-ultra-violet);
-                            color: var(--color-white);
-                          }
-
                           td {
                             background-color: var(--table-background);
                             color: var(--table-text);
                           }
 
+                          .row-header, th {
+                            background-color: var(--color-gray);
+                            color: var(--color-white);
+                          }
+
                           tr:nth-child(even) {
-                            background-color: var(--color-columbia-blue);
+                            background-color: var(--color-white);
                           }
 
                           .dark-mode-toggle {
@@ -214,10 +231,10 @@
                             right: 10px;
                             cursor: pointer;
                             padding: 10px;
-                            background-color: var(--color-ultra-violet);
-                            color: var(--color-white);
+                            background-color: var(--toggle-background);
+                            color: var(--toggle-text);
                             border: none;
-                            border-radius: 5px;
+                            ; border-radius: 0px;
                           }
 
                           @media (max-width: 768px) {
