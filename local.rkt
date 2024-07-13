@@ -13,6 +13,10 @@
   "parser.rkt"
   "utils.rkt")
 
+(define local-sboms '())
+
 (define (sbom-parse-file filepath)
   (define json-data (read-json-file filepath))
-  (print-json-table json-data))
+  (if (not (web)) 
+      (print-json-table json-data)
+      (set! local-sboms (append local-sboms (list json-data)))))
